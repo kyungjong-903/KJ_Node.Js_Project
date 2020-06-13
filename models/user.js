@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        maxlength: 50
+        maxlength: 100
     },
     role: {
         type: Number,
@@ -49,10 +49,13 @@ userSchema.pre('save', function( next ){
     }
 })
 
-userSchema.methods.comparePassword = function(planePassword, cb){
-    bcrypt.compare(planePassword, this.password, function(err, isMatch){
-        if(err) return cb(err),
-        cb(null, isMatch)
+
+userSchema.methods.comparePassword = function( planePassword, cb ){
+    var user = this;
+    
+    bcrypt.compare( planePassword, user.password, function(err, isMatch ){
+        if( err ) return cb( err )
+        cb( null, isMatch )
     })
 }
 
@@ -65,11 +68,28 @@ userSchema.methods.generateToken = function(cb){
     // ->
     // 'secretToken' -> user._id
     user.token = token
-user.save(function(err, user){
-    if(err) return cb(err)
-    cb(null, user)
-})
 
+    user.save(function(err, user){
+        if(err) return cb(err)
+        cb(null, user)
+    })
+
+}
+
+userSchema.statics.findByToken = function( token, cb) {
+    var user = this;
+
+    //토큰을 디코딩 하는중
+
+    jwt.verify(token, 'secretToken', function(err, decoded){
+        // 유저 아이디를 이용해서 유저를 찾은 뒤
+        // 클라이언트에서 가져온 토큰이 DB에 저장된 토큰과 일치하는지 확인
+
+        user.findOne({"_id": decoded, "token": token}, function(err, user){
+            if(err) return cb(err);
+            cb(null, user)
+        })
+    })
 }
 
 const User = mongoose.model('User', userSchema)
