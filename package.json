@@ -4,8 +4,8 @@
   "description": "",
   "main": "home.js",
   "scripts": {
-    "start": "node home.js",
-    "backend": "nodemon home.js",
+    "start": "node server/home.js",
+    "backend": "nodemon server/home.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
