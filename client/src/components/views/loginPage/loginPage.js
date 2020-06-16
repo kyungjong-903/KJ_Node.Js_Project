@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../_actions/user_action';
+import { withRouter } from 'react-router-dom';
 
-function LoginPage() {
+function LoginPage(props) {
     const dispatch = useDispatch();
 
     const [Email, setEmail] = useState("roroh903@naver.com");
@@ -21,14 +22,19 @@ function LoginPage() {
             email : Email,
             password : Password
         }
-        dispatch(loginUser(body))
+        dispatch(loginUser(body)).then(response => {
+            if( response.payload.loginSuccess ) {
+                alert('님 환영합니다.');
+                props.history.push("/");
+            }
+        })
 
     }
 
 
 
     return (
-        <div style={{ width: '300px', height : '700px', margin : '100px auto' }}>
+        <div style={{ display: 'flex', justifyContent : 'center', alignItem: 'center', width: '100%', height: '100vh' }}>
             <form style={{ display: 'flex', flexDirection : 'column' }} onSubmit={onSubmitHandler}
             >
                 <label>E-mail</label>
@@ -45,4 +51,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default withRouter(LoginPage)

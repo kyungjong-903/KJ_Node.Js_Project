@@ -3,25 +3,24 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 import LandingPage from './components/views/LandingPage/landingPage'
 import LoginPage from './components/views/loginPage/loginPage'
 import RegisterPage from './components/views/registerPage/registerPage'
-import NavBar from './components/views/navBar/navBar'
+import Auth from './hoc/auth';
+
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={LandingPage} />
+        <Route exact path="/" component={ Auth(LandingPage, null )} />
 
-        <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/login" component={ Auth(LoginPage, false)} />
 
-        <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/register" component={ Auth(RegisterPage, false)} />
         
-        <Route exact path="/navbar" component={NavBar} />
       </Switch>
     </Router>  
   );
